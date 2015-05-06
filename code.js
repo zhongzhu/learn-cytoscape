@@ -14,6 +14,10 @@ $(function(){ // on dom ready
     var style = then[0].style;
 
     var cy = window.cy = cytoscape({
+      textureOnViewport: true,
+      pixelRatio: 1,
+      motionBlur: true,
+
       container: document.getElementById('cy'),
       layout: { name: 'cose' },
       style: style,

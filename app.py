@@ -12,14 +12,20 @@ def getGraphData():
         spamreader = csv.reader(csvfile, delimiter=',')
 
         eNBs = []
+        teams = []
         for row in spamreader:
             team,type,rrh_name,rrh_id,rrh_sn,rrh_model,enb_name,enb_id = row
 
             elements["nodes"].append({"data": {"id": rrh_id, "name": type + rrh_name, "faveColor":"#EDA1ED"}})
             elements["edges"].append({"data": {"source": enb_id, "target": rrh_id}}) 
 
+            if team not in teams:
+                elements["nodes"].append({"data": {"id": team, "name": team, "faveColor":"black"}})
+                teams.append(team)
+
             if enb_id not in eNBs:
                 elements["nodes"].append({"data": {"id": enb_id, "name": enb_name, "faveColor":"#6FB1FC"}})
+                elements["edges"].append({"data": {"source": team, "target": enb_id}})
                 eNBs.append(enb_id)
 
     return elements
@@ -48,7 +54,8 @@ def haha():
         {
           "selector": 'edge',
           "css": {
-              'target-arrow-shape': 'triangle',
+              'curve-style': 'haystack',
+              # 'target-arrow-shape': 'triangle',
               'width': 2    
           }      
         },
