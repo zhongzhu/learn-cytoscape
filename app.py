@@ -15,6 +15,7 @@ def getGraphData():
         teams = []
         locIDs = []
         locEdges = []
+        loc2inventory = [] 
         
         # special node: No Location Specified
         elements["nodes"].append({"data": {"id": 'NoLocation', "name": "NoLocation", "faveColor":"red", "weight":80}})
@@ -23,11 +24,12 @@ def getGraphData():
             team,type,rrh_name,rrh_id,rrh_location,rrh_location_name,rrh_sn,rrh_model,enb_name,enb_id,enb_location,enb_location_name = row
 
             # enb rrh nodes
-            elements["nodes"].append({"data": {"id": rrh_id, "name": type + rrh_name, "faveColor":"#EDA1ED", "weight":10}})
+            elements["nodes"].append({"data": {"id": rrh_id, "name": type + rrh_name, "faveColor":"#EDA1ED", "weight":30}})
             elements["edges"].append({"data": {"source": enb_id, "target": rrh_id, "weight":5}}) 
 
+            # team
             if team not in teams:
-                elements["nodes"].append({"data": {"id": team, "name": team, "faveColor":"black", "weight":70}})
+                elements["nodes"].append({"data": {"id": team, "name": team, "faveColor":"black", "weight":60}})
                 teams.append(team)
 
             if enb_id not in eNBs:
@@ -52,9 +54,13 @@ def getGraphData():
                         elements["edges"].append({"data": {"source": locationIDs[i], "target": locationIDs[i + 1], "weight":10}})
 
                 # last location node should point to eNB
-                elements["edges"].append({"data": {"source": locationIDs[-1], "target": enb_id, "weight":10}})
+                if (locationIDs[-1] + enb_id) not in loc2inventory:
+                  elements["edges"].append({"data": {"source": locationIDs[-1], "target": enb_id, "weight":10}})
+                  loc2inventory.append(locationIDs[-1] + enb_id)
             else:
-                elements["edges"].append({"data": {"source": "NoLocation", "target": enb_id, "weight":10}})      
+                if ("NoLocation" + enb_id) not in loc2inventory:
+                  elements["edges"].append({"data": {"source": "NoLocation", "target": enb_id, "weight":10}})      
+                  loc2inventory.append("NoLocation" + enb_id)
 
             # rrh Locations
             if rrh_location_name:                
@@ -75,9 +81,13 @@ def getGraphData():
                         elements["edges"].append({"data": {"source": locationIDs[i], "target": locationIDs[i + 1], "weight":10}})
 
                 # last location node should point to rrh
-                elements["edges"].append({"data": {"source": locationIDs[-1], "target": rrh_id, "weight":10}})
+                if ("NoLocation" + rrh_id) not in loc2inventory:
+                    elements["edges"].append({"data": {"source": locationIDs[-1], "target": rrh_id, "weight":10}})
+                    loc2inventory.append("NoLocation" + rrh_id)
             else:
-                elements["edges"].append({"data": {"source": "NoLocation", "target": rrh_id, "weight":10}})            
+                if ("NoLocation" + rrh_id) not in loc2inventory:
+                    elements["edges"].append({"data": {"source": "NoLocation", "target": rrh_id, "weight":10}})            
+                    loc2inventory.append("NoLocation" + rrh_id)
 
     # print(elements)
 
@@ -122,8 +132,8 @@ def haha():
           "css": {
             'content': 'data(name)',
             'text-valign': 'center',
-            # 'width': 'mapData(weight, 0, 100, 10, 60)',
-            # 'height': 'mapData(weight, 0, 100, 10, 60)',            
+            'width': 'mapData(weight, 0, 100, 10, 60)',
+            'height': 'mapData(weight, 0, 100, 10, 60)',            
             'color': 'white',
             'background-color': 'data(faveColor)',
             "min-zoomed-font-size": 10,

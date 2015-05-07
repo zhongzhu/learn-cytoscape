@@ -21,12 +21,11 @@ $(function(){ // on dom ready
       container: document.getElementById('cy'),
       style: style,
       layout: {
-        // name: 'cose',
-        name: 'concentric',
-        concentric: function(){ 
-          // console.log(this.data('weight'));
-          return this.data('weight'); 
-        },
+        name: 'cose',
+        // name: 'concentric',
+        // concentric: function(){ 
+        //   return this.data('weight'); 
+        // },
         // levelWidth: function( nodes ){ return 10; },
         // padding: 10
       },      
