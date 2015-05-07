@@ -14,13 +14,22 @@ $(function(){ // on dom ready
     var style = then[0].style;
 
     var cy = window.cy = cytoscape({
-      textureOnViewport: true,
-      pixelRatio: 1,
-      motionBlur: true,
+      // textureOnViewport: true,
+      // pixelRatio: 1,
+      // motionBlur: true,
 
       container: document.getElementById('cy'),
-      layout: { name: 'cose' },
       style: style,
+      layout: {
+        // name: 'cose',
+        name: 'concentric',
+        concentric: function(){ 
+          // console.log(this.data('weight'));
+          return this.data('weight'); 
+        },
+        // levelWidth: function( nodes ){ return 10; },
+        // padding: 10
+      },      
       elements: elements,
       ready: onReady
     });    
@@ -32,7 +41,7 @@ $(function(){ // on dom ready
 
     cy.on('tap', 'node', function(e){
       var node = e.cyTarget; 
-      var neighborhood = node.neighborhood().add(node);
+      var neighborhood = node.successors().add(node);
 
       cy.elements().addClass('faded');
       neighborhood.removeClass('faded');
